@@ -22,6 +22,6 @@
         action: service name=httpd state=restarted
 
       - name: Install MySQL on Host Machines
-        action: yum pkg=MariaDB-serve state=present
+        action: yum pkg=mariadb105 state=present
         ignore_errors: yes
       
