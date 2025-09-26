@@ -6,7 +6,7 @@
   tasks:
 
       - name: Install Git on Host Machines
-        action: yum pkg-git state=present
+        action: yum pkg=git state=present
 
       - name: Install docker on Host Machines
         action: yum pkg=docker state=present
