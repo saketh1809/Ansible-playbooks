@@ -6,7 +6,7 @@
   tasks:
 
       - name: Install java on Host Machines
-        action: yum pkg=jdk-17 amazon-corretto state=present
+        action: yum pkg=java-1.8.0-openjdk state=present
         ignore_errors: yes
 
       - name: Install Python on Host Machines
@@ -22,5 +22,5 @@
         action: service name=httpd state=restarted
 
       - name: Install MySQL on Host Machines
-        action: yum pkg=mariadb state=present
+        action: yum pkg=mysql-server state=present
       
