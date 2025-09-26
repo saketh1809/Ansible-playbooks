@@ -1,0 +1,12 @@
+---
+- hosts: webservers
+  user: ansible
+  become: true
+  connection: ssh
+  tasks:
+
+      - name: Start webserver on Host Machines
+        action: service name=httpd state=started
+
+      - name: clone git repo
+        action: git repo=https://github.com/Msocial123/Flipkart-Clone.git version=main 
