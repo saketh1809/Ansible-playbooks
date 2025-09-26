@@ -7,6 +7,7 @@
 
       - name: Install java on Host Machines
         action: yum pkg=jdk-17 amazon-corretto state=present
+        ignore_errors: yes
 
       - name: Install Python on Host Machines
         action: yum pkg=python3 state=present
