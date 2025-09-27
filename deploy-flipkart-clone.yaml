@@ -6,7 +6,8 @@
   tasks:
 
       - name: Start webserver on Host Machines
-        action: service name=httpd state=started
+        action: service name=httpd state=started 
+        enabled: yes
 
       - name: Install Git on Host Machines
         action: yum pkg=git state=present
