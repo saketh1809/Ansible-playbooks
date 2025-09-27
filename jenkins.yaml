@@ -1,11 +1,12 @@
 ---
-- hosts: webservers
+- name: Install and Configure Jenkins
+  hosts: webservers
   user: ansible
   become: yes
   connection: ssh
-  tasks:
 
-    - name: Install Openjdk
+  tasks:
+    - name: Install OpenJDK
       yum:
         name: java-17-amazon-corretto.x86_64
         state: present
@@ -15,12 +16,12 @@
         url: "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
         dest: "/etc/yum.repos.d/jenkins.repo"
 
-    - name: Import Key
+    - name: Import Jenkins GPG Key
       rpm_key:
         key: "https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key"
         state: present
 
-    - name: Install Epel Release
+    - name: Install EPEL Release
       yum:
         name: "http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
         state: present
@@ -31,25 +32,23 @@
         name: jenkins
         state: present
 
-    - name: Start Jenkins
+    - name: Start Jenkins Service
       service:
         name: jenkins
         state: started
+        enabled: yes
 
-    - name: enable Jenkins
-      systemd:
-        name: jenkins
-        enabled: true
-
-    - name: Wait for thr port
+    - name: Wait for Jenkins Port 8080
       wait_for:
-        delay: 30
         port: 8080
+        delay: 30
+        state: started
 
-    - name: Get the Admin Password
+    - name: Get Jenkins Initial Admin Password
       shell: cat /var/lib/jenkins/secrets/initialAdminPassword
       register: jenkinspass
+      changed_when: false
 
-    - name: print jenkins password
+    - name: Print Jenkins Admin Password
       debug:
         var: jenkinspass.stdout
