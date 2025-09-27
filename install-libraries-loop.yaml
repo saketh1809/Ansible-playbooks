@@ -1,0 +1,21 @@
+---
+- hosts: webservers
+  user: ansible
+  become: true
+  connection: ssh
+  tasks: 
+    - name: Check if packages are installed
+      shell: "rpm -q {{ item }}"
+      register: package_check
+      ignore_errors: true
+      loop:
+        - python3
+        - java-17-amazon-corretto-devel
+        - git
+
+    - name: Install missing packages
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ package_check.results | selectattr('rc', 'ne', 0) | map(attribute='item') | list }}"
+      when: package_check.results is defined
