@@ -1,54 +1,49 @@
 ---
-- name: Install and Configure Jenkins
-  hosts: webservers
+- hosts: webservers
   user: ansible
-  become: yes
+  become: true
   connection: ssh
-
+ 
   tasks:
-    - name: Install OpenJDK
+    - name: Install OpenJDK 17
       yum:
         name: java-17-amazon-corretto.x86_64
         state: present
-
-    - name: Download the Jenkins Repo
+ 
+    - name: Add Jenkins repository
       get_url:
-        url: "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
-        dest: "/etc/yum.repos.d/jenkins.repo"
-
-    - name: Import Jenkins GPG Key
+        url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+        dest: /etc/yum.repos.d/jenkins.repo
+ 
+    - name: Import Jenkins GPG key
       rpm_key:
-        key: "https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key"
+        key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
         state: present
-
-    - name: Install EPEL Release
-      yum:
-        name: "http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
-        state: present
-        disable_gpg_check: true
-
+ 
     - name: Install Jenkins
       yum:
         name: jenkins
         state: present
-
-    - name: Start Jenkins Service
+ 
+    - name: Start Jenkins service
       service:
         name: jenkins
         state: started
-        enabled: yes
-
-    - name: Wait for Jenkins Port 8080
+ 
+    - name: Enable Jenkins to start on boot
+      systemd:
+        name: jenkins
+        enabled: true
+ 
+    - name: Wait for Jenkins to be available on port 8080
       wait_for:
         port: 8080
         delay: 30
-        state: started
-
-    - name: Get Jenkins Initial Admin Password
+ 
+    - name: Retrieve Jenkins initial admin password
       shell: cat /var/lib/jenkins/secrets/initialAdminPassword
       register: jenkinspass
-      changed_when: false
-
-    - name: Print Jenkins Admin Password
+ 
+    - name: Display Jenkins admin password
       debug:
         var: jenkinspass.stdout
