@@ -7,7 +7,7 @@
   tasks:
     - name: Install OpenJDK 17
       yum:
-        name: java-17-amazon-corretto.x86_64
+        name: java-1.8.0-openjdk
         state: present
  
     - name: Add Jenkins repository
